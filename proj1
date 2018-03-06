@@ -1,0 +1,61 @@
+#!/bin/bash
+# Cody Riewerts
+# Project 1
+
+
+#function 
+function details {
+	for i in "$@" ; do
+		# if the arg is NOT blank
+		if [ $i != "" ] ;
+		then if [[ -d $i ]] ;
+			#if the arg is a directory 
+			then	
+				echo This is a Directory
+				echo dir: $(basename "$i")
+				echo  
+				name="$2"$(basename "$i")
+				#recursion to add each folder to the name
+				for file in "$i"/* ; do
+					details "$file" "$name"
+				done
+			elif [[ -f $i ]] ;
+				#if the arg is a file
+				then 
+				#if the file is NOT symbolic
+				if [[ ! -h $i ]] ;
+				then
+					contents=$(file -b "$i")
+					echo This is a File
+					echo file: $i $contents
+					echo filesize: $(du -sh "$i")
+					echo 
+				else 
+				#if file IS symbolic
+					linked=$(readlink -n "$i")
+					echo This a Symbolic Link File
+					echo link: $linked
+					echo  
+				fi
+				
+				#echo end the of the directory
+				echo You have reached the end of this directory
+				echo
+			else 
+			#argument is a different type
+				echo This file is Unknown: "$i"	
+				echo  
+			fi
+		#if argument IS blank
+		else
+		i=.
+		echo The list is BLANK
+		fi
+	done
+}
+
+#execute the function details
+details $1				
+
+
+	 
